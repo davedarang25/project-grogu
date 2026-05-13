@@ -15,3 +15,4 @@ def mark_attendance():
 
     if not found:
         print("Participant not found.")
+2

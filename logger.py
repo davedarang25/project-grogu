@@ -9,5 +9,5 @@ logging.basicConfig(
 )
 
 def log_event(event_message):
-    """Log system events with timestamps."""
+    """Log system events with timestamps"""
     logging.info(event_message)
