@@ -1,28 +1,82 @@
-# storage py
+# storage.py
 
-def save_student(studentID, name, status="Absent", filename="students.txt"):
-    """Save student details to a file."""
+def save_student(studentID, name, status, participant_type="Student", filename="students.txt"):
     with open(filename, "a") as file:
-        file.write(f"{studentID},{name},{status}\n")
+        file.write(f"{name}|{participant_type}|{studentID}|{status}\n")
+
 
 def load_students(filename="students.txt"):
-    """Load student details from file"""
     students = []
+
     try:
         with open(filename, "r") as file:
             for line in file:
-                studentID, name, status = line.strip().split(",")
-                students.append((studentID, name, status))
+                line = line.strip()
+
+                if line == "":
+                    continue
+
+                # New format:
+                # Name | Type | ID Number | Status
+                if "|" in line:
+                    parts = line.split("|")
+
+                    if len(parts) == 4:
+                        name = parts[0].strip()
+                        participant_type = parts[1].strip()
+                        studentID = parts[2].strip()
+                        status = parts[3].strip()
+
+                        students.append({
+                            "name": name,
+                            "type": participant_type,
+                            "studentID": studentID,
+                            "status": status
+                        })
+
+                # Old format support:
+                # ID,Name,Status
+                else:
+                    parts = line.split(",")
+
+                    studentID = parts[0].strip()
+                    status = parts[-1].strip()
+                    name = ",".join(parts[1:-1]).strip()
+
+                    if studentID.startswith("GUEST"):
+                        participant_type = "Guest"
+                    else:
+                        participant_type = "Student"
+
+                    students.append({
+                        "name": name,
+                        "type": participant_type,
+                        "studentID": studentID,
+                        "status": status
+                    })
+
     except FileNotFoundError:
-        pass
+        return []
+
     return students
 
+
 def list_students(filename="students.txt"):
-    """Print a list of all student IDs and names."""
     students = load_students(filename)
+
+    print("\n=== Participant Records ===")
+
     if not students:
-        print("No students registered yet.")
+        print("No records found.")
         return
-    print("\n=== Registered Students ===")
-    for studentID, name, status in students:
-        print(f"ID: {studentID} | Name: {name} | Status: {status}")
+
+    print(f"{'Name':<30} | {'Type':<10} | {'ID Number':<15} | {'Status':<10}")
+    print("-" * 75)
+
+    for student in students:
+        print(
+            f"{student['name']:<30} | "
+            f"{student['type']:<10} | "
+            f"{student['studentID']:<15} | "
+            f"{student['status']:<10}"
+        )
