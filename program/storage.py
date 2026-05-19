@@ -26,3 +26,24 @@ def list_students(filename="students.txt"):
     print("\n=== Registered Students ===")
     for studentID, name, status in students:
         print(f"ID: {studentID} | Name: {name} | Status: {status}")
+
+def save_event(name, time, date, filename="event.txt"):
+    """Save the current event details to a file."""
+    with open(filename, "w") as file:
+        file.write(f"{name},{time},{date}\n")
+
+
+def load_event(filename="event.txt"):
+    """Load the saved event details from a file."""
+    try:
+        with open(filename, "r") as file:
+            line = file.readline().strip()
+
+            if line:
+                name, time, date = line.split(",")
+                return name, time, date
+
+    except FileNotFoundError:
+        pass
+
+    return None

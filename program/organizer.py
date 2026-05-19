@@ -2,9 +2,16 @@ from registration import participants
 from logger import log_event
 from menu import show_organizer_menu
 from sorting import bubble_sort
+from storage import save_event, load_event
 from event import Event
 
-current_event = Event()
+saved_event = load_event()
+
+if saved_event:
+    name, time, date = saved_event
+    current_event = Event(name, time, date)
+else:
+    current_event = Event()
 
 # Stores the current event details entered by the organizer.
 
@@ -19,6 +26,8 @@ def set_event_details():
         return
 
     current_event.setDetails(name, time, date)
+
+    save_event(name, time, date)
 
     log_event(f"Event details set: Name={name}, Time={time}, Date={date}")
     print("Event details saved successfully.")
