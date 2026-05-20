@@ -1,31 +1,60 @@
 # storage py
 
-def save_student(studentID, name, status="Absent", filename="students.txt"):
-    """Save student details to a file."""
+def save_student(
+    studentID,
+    name,
+    eventName,
+    eventTime,
+    eventDate,
+    status="Absent",
+    filename="students.txt"
+):
+    """Save student details and chosen event to a file."""
     with open(filename, "a") as file:
-        file.write(f"{studentID},{name},{status}\n")
+        file.write(
+            f"{studentID},{name},{eventName},"
+            f"{eventTime},{eventDate},{status}\n"
+        )
 
 def load_students(filename="students.txt"):
-    """Load student details from file"""
+    """Load student details from file."""
     students = []
+
     try:
         with open(filename, "r") as file:
             for line in file:
-                studentID, name, status = line.strip().split(",")
-                students.append((studentID, name, status))
+                data = line.strip().split(",")
+
+                if len(data) == 6:
+                    studentID, name, eventName, eventTime, eventDate, status = data
+                    students.append(
+                        (studentID, name, eventName, eventTime, eventDate, status)
+                    )
+
     except FileNotFoundError:
         pass
+
     return students
 
 def list_students(filename="students.txt"):
-    """Print a list of all student IDs and names."""
+    """Print a list of all registered students and their chosen events."""
     students = load_students(filename)
+
     if not students:
         print("No students registered yet.")
         return
+
     print("\n=== Registered Students ===")
-    for studentID, name, status in students:
-        print(f"ID: {studentID} | Name: {name} | Status: {status}")
+
+    for studentID, name, eventName, eventTime, eventDate, status in students:
+        print(
+            f"ID: {studentID} | "
+            f"Name: {name} | "
+            f"Event: {eventName} | "
+            f"Date: {eventDate} | "
+            f"Time: {eventTime} | "
+            f"Status: {status}"
+        )
 
 def save_event(name, time, date, filename="event.txt"):
     """Save the current event details to a file."""
@@ -47,3 +76,28 @@ def load_event(filename="event.txt"):
         pass
 
     return None
+def save_event_slot(name, time, date, filename="event_slots.txt"):
+    """Save an event slot to a file."""
+    with open(filename, "a") as file:
+        file.write(f"{name},{time},{date}\n")
+
+
+def load_event_slots(filename="event_slots.txt"):
+    """Load all saved event slots from a file."""
+    event_slots = []
+
+    try:
+        with open(filename, "r") as file:
+            for line in file:
+                name, time, date = line.strip().split(",")
+
+                event_slots.append({
+                    "name": name,
+                    "time": time,
+                    "date": date
+                })
+
+    except FileNotFoundError:
+        pass
+
+    return event_slots

@@ -1,4 +1,5 @@
 from registration import participants
+from timeline import Timeline
 from logger import log_event
 from menu import show_organizer_menu
 from sorting import bubble_sort
@@ -13,20 +14,27 @@ if saved_event:
 else:
     current_event = Event()
 
+timeline = Timeline()
+
 # Stores the current event details entered by the organizer.
 
 def set_event_details():
     """Allow the organizer to enter the event name, time, and date together."""
     name = input("Enter event name: ").strip()
-    time = input("Enter event time: ").strip()
+    time = input("Enter event time range, e.g. 9:00 AM - 11:00 AM: ").strip()
     date = input("Enter event date: ").strip()
 
     if not name or not time or not date:
         print("Event name, time, and date cannot be empty.")
         return
 
+    if timeline.is_slot_taken(date, time):
+        print("Slot taken. Another event is already scheduled for that date and time.")
+        return
+
     current_event.setDetails(name, time, date)
 
+    timeline.add_event_slot(name, time, date)
     save_event(name, time, date)
 
     log_event(f"Event details set: Name={name}, Time={time}, Date={date}")
