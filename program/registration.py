@@ -1,12 +1,33 @@
-# registration.py
 from participant import Participant
 from utils import validate_input
 from logger import log_event
-from storage import save_student, list_students
+from storage import save_student, list_students, load_students
 from timeline import Timeline
+from queue import Queue
+from undo import undo_stack
 
 participants = []
+registration_queue = Queue()
 timeline = Timeline()
+
+
+def load_saved_participants():
+    """Load saved student records into the in-memory participant list."""
+    saved_students = load_students()
+
+    for studentID, name, eventName, eventTime, eventDate, status in saved_students:
+        participant = Participant(
+            name,
+            studentID,
+            eventName,
+            eventTime,
+            eventDate,
+            status
+        )
+        participants.append(participant)
+
+
+load_saved_participants()
 
 
 def choose_event():
@@ -41,8 +62,13 @@ def choose_event():
 
 
 def register_participant():
+    """Register a student and record the event they will attend."""
     name = input("Enter participant name: ").strip()
     studentID = input("Enter student ID: ").strip()
+
+    if not name or not studentID:
+        print("Participant name and student ID cannot be empty.")
+        return
 
     if not validate_input(name, studentID, participants):
         print("Registration failed due to duplicate ID.")
@@ -63,6 +89,8 @@ def register_participant():
     )
 
     participants.append(new_participant)
+    registration_queue.enqueue(new_participant)
+    undo_stack.push(("register", new_participant))
 
     save_student(
         studentID,
@@ -76,5 +104,4 @@ def register_participant():
     log_event(f"Registered participant: {new_participant.viewDetails()}")
 
     print("Registration successful.")
-
     list_students()

@@ -19,7 +19,7 @@ timeline = Timeline()
 # Stores the current event details entered by the organizer.
 
 def set_event_details():
-    """Allow the organizer to enter the event name, time, and date together."""
+    """Allow the organizer to enter the event name, time range, and date together."""
     name = input("Enter event name: ").strip()
     time = input("Enter event time range, e.g. 9:00 AM - 11:00 AM: ").strip()
     date = input("Enter event date: ").strip()
@@ -28,17 +28,17 @@ def set_event_details():
         print("Event name, time, and date cannot be empty.")
         return
 
-    if timeline.is_slot_taken(date, time):
-        print("Slot taken. Another event is already scheduled for that date and time.")
+    added, message = timeline.add_event_slot(name, time, date)
+
+    if not added:
+        print(message)
         return
 
     current_event.setDetails(name, time, date)
-
-    timeline.add_event_slot(name, time, date)
     save_event(name, time, date)
 
     log_event(f"Event details set: Name={name}, Time={time}, Date={date}")
-    print("Event details saved successfully.")
+    print(message)
 
 
 def view_attendee_list():
