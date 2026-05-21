@@ -1,3 +1,6 @@
 2026-05-21 23:59:58,197 - INFO - Event details set: Name=Campus Ceremony, Time=7:00 AM - 10:00 AM, Date=May 9, 2027
 2026-05-22 00:09:30,187 - INFO - Registered participant: Name: Julius Ditan, ID: 1, Section: CS101, Event: Campus Ceremony, Date: May 9, 2027, Time: 7:00 AM - 10:00 AM, Status: Absent
 2026-05-22 00:09:50,875 - INFO - Attendance marked: Name: Julius Ditan, ID: 1, Section: CS101, Event: Campus Ceremony, Date: May 9, 2027, Time: 7:00 AM - 10:00 AM, Status: Present
+2026-05-22 00:57:02,930 - INFO - Event details set: Name=Campus Ceremony, Time=7:00 AM - 10:00 AM, Date=May 30, 2026
+2026-05-22 00:57:37,918 - INFO - Registered student: Name: Julius Miguel Ditan, ID: 1, Section: CS101, Event: Campus Ceremony, Date: May 30, 2026, Time: 7:00 AM - 10:00 AM, Status: Absent
+2026-05-22 00:57:43,499 - INFO - Attendance marked: Name: Julius Miguel Ditan, ID: 1, Section: CS101, Event: Campus Ceremony, Date: May 30, 2026, Time: 7:00 AM - 10:00 AM, Status: Present
