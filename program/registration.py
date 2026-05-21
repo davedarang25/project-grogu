@@ -1,8 +1,10 @@
-# registration.py
 from participant import Participant
 from utils import validate_input
 from logger import log_event
-from storage import save_student, list_students
+from storage import save_student, list_students, load_students
+from timeline import Timeline
+from queue import Queue
+from undo import undo_stack
 
 participants = []
 registration_queue = Queue()
@@ -38,6 +40,7 @@ def choose_event():
         return None
 
     print("\n=== Available Events ===")
+
     for number, slot in enumerate(event_slots, start=1):
         print(
             f"[{number}] {slot['name']} | "
@@ -62,12 +65,12 @@ def choose_event():
 
 def register_participant():
     """Register a student and record the event they will attend."""
-    name = input("Enter participant name: ").strip()
+    name = input("Enter student name: ").strip()
     studentID = input("Enter student ID: ").strip()
     section = input("Enter section: ").strip()
 
     if not name or not studentID or not section:
-        print("Participant name, student ID, and section cannot be empty.")
+        print("Student name, student ID, and section cannot be empty.")
         return
 
     if not validate_input(name, studentID, participants):
@@ -103,32 +106,7 @@ def register_participant():
         new_participant.status
     )
 
-    log_event(f"Registered participant: {new_participant.viewDetails()}")
+    log_event(f"Registered student: {new_participant.viewDetails()}")
 
-        print("Guest registration successful.")
-        list_students()
-
-    else:
-        print("Guest registration failed due to duplicate guest number.")
-
-
-def register_participant():
-    while True:
-        print("\n=== Register Participant ===")
-        print("1. Student")
-        print("2. Guest")
-        print("3. Back")
-
-        choice = input("Choose participant type: ").strip()
-
-        if choice == "1":
-            register_student()
-
-        elif choice == "2":
-            register_guest()
-
-        elif choice == "3":
-            return
-
-        else:
-            print("Invalid choice. Please try again.")
+    print("Registration successful.")
+    list_students()

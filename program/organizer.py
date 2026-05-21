@@ -1,28 +1,45 @@
 from registration import participants
+from timeline import Timeline
 from logger import log_event
 from menu import show_organizer_menu
 from sorting import bubble_sort
+from storage import save_event, load_event
 from event import Event
 from utils import pause_screen
 
-current_event = Event()
+saved_event = load_event()
+
+if saved_event:
+    name, time, date = saved_event
+    current_event = Event(name, time, date)
+else:
+    current_event = Event()
+
+timeline = Timeline()
 
 # Stores the current event details entered by the organizer.
 
 def set_event_details():
-    """Allow the organizer to enter the event name, time, and date together."""
+    """Allow the organizer to enter the event name, time range, and date together."""
     name = input("Enter event name: ").strip()
-    time = input("Enter event time: ").strip()
+    time = input("Enter event time range, e.g. 9:00 AM - 11:00 AM: ").strip()
     date = input("Enter event date: ").strip()
 
     if not name or not time or not date:
         print("Event name, time, and date cannot be empty.")
         return
 
+    added, message = timeline.add_event_slot(name, time, date)
+
+    if not added:
+        print(message)
+        return
+
     current_event.setDetails(name, time, date)
+    save_event(name, time, date)
 
     log_event(f"Event details set: Name={name}, Time={time}, Date={date}")
-    print("Event details saved successfully.")
+    print(message)
 
 def event_matches_participant(participant, event_slot):
     """Check if a participant belongs to a selected event."""
@@ -166,7 +183,7 @@ def view_attendee_list():
     print("[1] Sort by Name - Ascending")
     print("[2] Sort by Name - Descending")
     print("[3] Filter by Status - Present or Absent")
-    print("[4] Sort by Section ")
+    print("[4] Sort by Section")
     print("[5] Return")
 
     choice = input("Enter your choice [1-5]: ").strip()

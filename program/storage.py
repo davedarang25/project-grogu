@@ -26,23 +26,20 @@ def save_student(
 
 
 def load_students(filename="students.txt"):
+    """Load all student records from storage."""
     students = []
 
     try:
-        with open(filename, "r") as file:
-            for line in file:
-                line = line.strip()
+        with open(filename, "r", newline="", encoding="utf-8") as file:
+            reader = csv.reader(file)
 
-                if line == "":
+            for row in reader:
+                if not row:
                     continue
 
-                # New format:
-                # studentID, name, section, eventName, eventTime, eventDate, status
                 if len(row) == 7:
                     studentID, name, section, eventName, eventTime, eventDate, status = row
 
-                # Old format without section:
-                # studentID, name, eventName, eventTime, eventDate, status
                 elif len(row) == 6:
                     studentID, name, eventName, eventTime, eventDate, status = row
                     section = "Not set"
@@ -63,13 +60,13 @@ def load_students(filename="students.txt"):
                 )
 
     except FileNotFoundError:
-        return []
+        pass
 
     return students
 
 
 def save_all_students(participants, filename="students.txt"):
-    """Rewrite all participant records after attendance changes or undo."""
+    """Rewrite all student records after attendance changes or undo."""
     with open(filename, "w", newline="", encoding="utf-8") as file:
         writer = csv.writer(file)
 
@@ -86,16 +83,14 @@ def save_all_students(participants, filename="students.txt"):
 
 
 def list_students(filename="students.txt"):
+    """Print all registered students and their chosen events."""
     students = load_students(filename)
 
-    print("\n=== Participant Records ===")
-
     if not students:
-        print("No records found.")
+        print("No students registered yet.")
         return
 
-    print(f"{'Name':<30} | {'Type':<10} | {'ID Number':<15} | {'Status':<10}")
-    print("-" * 75)
+    print("\n=== Registered Students ===")
 
     for studentID, name, section, eventName, eventTime, eventDate, status in students:
         print(
@@ -129,7 +124,6 @@ def load_event(filename="event.txt"):
             if len(row) == 3:
                 name, time, date = row
 
-            # Recovery for older entries like May 25, 2026
             elif len(row) > 3:
                 name = row[0]
                 time = row[1]
@@ -168,7 +162,6 @@ def load_event_slots(filename="event_slots.txt"):
                 if len(row) == 3:
                     name, time, date = row
 
-                # Recovery for older entries like May 25, 2026
                 elif len(row) > 3:
                     name = row[0]
                     time = row[1]
@@ -187,6 +180,8 @@ def load_event_slots(filename="event_slots.txt"):
         pass
 
     return event_slots
+
+
 def save_all_event_slots(event_slots, filename="event_slots.txt"):
     """Rewrite all event slots after one event is deleted."""
     with open(filename, "w", newline="", encoding="utf-8") as file:

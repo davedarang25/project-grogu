@@ -1,18 +1,26 @@
-# attendance.py
 from logger import log_event
 from registration import participants
+from storage import save_all_students
+from undo import undo_stack
+
 
 def mark_attendance():
+    """Mark one student as present and save the change."""
     studentID = input("Enter student ID to mark attendance: ").strip()
-    found = False
 
     for participant in participants:
         if participant.studentID == studentID:
-            participant.markPresent()
-            log_event(f"Attendance marked: {participant.viewDetails()}")
-            found = True
-            break
+            if participant.status == "Present":
+                print(f"{participant.name} is already marked as Present.")
+                return
 
-    if not found:
-        print("Participant not found.")
-2
+            previous_status = participant.status
+            participant.markPresent()
+
+            undo_stack.push(("attendance", participant, previous_status))
+            save_all_students(participants)
+
+            log_event(f"Attendance marked: {participant.viewDetails()}")
+            return
+
+    print("Student not found.")
