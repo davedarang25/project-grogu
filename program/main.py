@@ -7,6 +7,7 @@ from search import search_participant
 from undo import undo_action
 from report import generate_report
 from organizer import organizer_menu
+from utils import pause_screen
 
 
 def student_menu():
@@ -16,18 +17,23 @@ def student_menu():
 
         if choice == "1":  # Register
             register_participant()
+            pause_screen()
 
         elif choice == "2":  # Attendance
             mark_attendance()
+            pause_screen()
 
         elif choice == "3":  # Search
             search_participant()
+            pause_screen()
 
         elif choice == "4":  # Undo
             undo_action()
+            pause_screen()
 
         elif choice == "5":  # Report
             generate_report()
+            pause_screen()
 
         elif choice == "6":  # Return
             print("Returning to user selection...")

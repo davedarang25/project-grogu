@@ -4,6 +4,7 @@ import csv
 def save_student(
     studentID,
     name,
+    section,
     eventName,
     eventTime,
     eventDate,
@@ -13,7 +14,15 @@ def save_student(
     """Append one student's details and chosen event to storage."""
     with open(filename, "a", newline="", encoding="utf-8") as file:
         writer = csv.writer(file)
-        writer.writerow([studentID, name, eventName, eventTime, eventDate, status])
+        writer.writerow([
+            studentID,
+            name,
+            section,
+            eventName,
+            eventTime,
+            eventDate,
+            status
+        ])
 
 
 def load_students(filename="students.txt"):
@@ -28,23 +37,30 @@ def load_students(filename="students.txt"):
                 if not row:
                     continue
 
-                if len(row) == 6:
-                    studentID, name, eventName, eventTime, eventDate, status = row
+                # New format:
+                # studentID, name, section, eventName, eventTime, eventDate, status
+                if len(row) == 7:
+                    studentID, name, section, eventName, eventTime, eventDate, status = row
 
-                # Recovery for older entries like May 25, 2026
-                elif len(row) > 6:
-                    studentID = row[0]
-                    name = row[1]
-                    eventName = row[2]
-                    eventTime = row[3]
-                    eventDate = ",".join(row[4:-1]).strip()
-                    status = row[-1]
+                # Old format without section:
+                # studentID, name, eventName, eventTime, eventDate, status
+                elif len(row) == 6:
+                    studentID, name, eventName, eventTime, eventDate, status = row
+                    section = "Not set"
 
                 else:
                     continue
 
                 students.append(
-                    (studentID, name, eventName, eventTime, eventDate, status)
+                    (
+                        studentID,
+                        name,
+                        section,
+                        eventName,
+                        eventTime,
+                        eventDate,
+                        status
+                    )
                 )
 
     except FileNotFoundError:
@@ -62,6 +78,7 @@ def save_all_students(participants, filename="students.txt"):
             writer.writerow([
                 participant.studentID,
                 participant.name,
+                participant.section,
                 participant.eventName,
                 participant.eventTime,
                 participant.eventDate,
@@ -79,10 +96,11 @@ def list_students(filename="students.txt"):
 
     print("\n=== Registered Students ===")
 
-    for studentID, name, eventName, eventTime, eventDate, status in students:
+    for studentID, name, section, eventName, eventTime, eventDate, status in students:
         print(
             f"ID: {studentID} | "
             f"Name: {name} | "
+            f"Section: {section} | "
             f"Event: {eventName} | "
             f"Date: {eventDate} | "
             f"Time: {eventTime} | "
@@ -168,3 +186,14 @@ def load_event_slots(filename="event_slots.txt"):
         pass
 
     return event_slots
+def save_all_event_slots(event_slots, filename="event_slots.txt"):
+    """Rewrite all event slots after one event is deleted."""
+    with open(filename, "w", newline="", encoding="utf-8") as file:
+        writer = csv.writer(file)
+
+        for slot in event_slots:
+            writer.writerow([
+                slot["name"],
+                slot["time"],
+                slot["date"]
+            ])

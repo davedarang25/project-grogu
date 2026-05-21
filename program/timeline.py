@@ -1,5 +1,5 @@
 from datetime import datetime
-from storage import save_event_slot, load_event_slots
+from storage import save_event_slot, load_event_slots, save_all_event_slots
 
 
 class Timeline:
@@ -89,3 +89,24 @@ class Timeline:
         """Return the latest available event slots."""
         self.refresh()
         return self.event_slots
+    
+    def delete_event_slot(self, selected_slot):
+        """Delete a finished event slot from the timeline."""
+        self.refresh()
+
+        updated_slots = []
+
+        for slot in self.event_slots:
+            same_name = slot["name"] == selected_slot["name"]
+            same_time = slot["time"] == selected_slot["time"]
+            same_date = slot["date"] == selected_slot["date"]
+
+            if not (same_name and same_time and same_date):
+                updated_slots.append(slot)
+
+        if len(updated_slots) == len(self.event_slots):
+            return False
+
+        self.event_slots = updated_slots
+        save_all_event_slots(self.event_slots)
+        return True

@@ -15,10 +15,11 @@ def load_saved_participants():
     """Load saved student records into the in-memory participant list."""
     saved_students = load_students()
 
-    for studentID, name, eventName, eventTime, eventDate, status in saved_students:
+    for studentID, name, section, eventName, eventTime, eventDate, status in saved_students:
         participant = Participant(
             name,
             studentID,
+            section,
             eventName,
             eventTime,
             eventDate,
@@ -65,9 +66,10 @@ def register_participant():
     """Register a student and record the event they will attend."""
     name = input("Enter participant name: ").strip()
     studentID = input("Enter student ID: ").strip()
+    section = input("Enter section: ").strip()
 
-    if not name or not studentID:
-        print("Participant name and student ID cannot be empty.")
+    if not name or not studentID or not section:
+        print("Participant name, student ID, and section cannot be empty.")
         return
 
     if not validate_input(name, studentID, participants):
@@ -83,6 +85,7 @@ def register_participant():
     new_participant = Participant(
         name,
         studentID,
+        section,
         selected_event["name"],
         selected_event["time"],
         selected_event["date"]
@@ -95,6 +98,7 @@ def register_participant():
     save_student(
         studentID,
         name,
+        section,
         selected_event["name"],
         selected_event["time"],
         selected_event["date"],
