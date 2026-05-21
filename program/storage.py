@@ -26,15 +26,14 @@ def save_student(
 
 
 def load_students(filename="students.txt"):
-    """Load all student records from storage."""
     students = []
 
     try:
-        with open(filename, "r", newline="", encoding="utf-8") as file:
-            reader = csv.reader(file)
+        with open(filename, "r") as file:
+            for line in file:
+                line = line.strip()
 
-            for row in reader:
-                if not row:
+                if line == "":
                     continue
 
                 # New format:
@@ -64,7 +63,7 @@ def load_students(filename="students.txt"):
                 )
 
     except FileNotFoundError:
-        pass
+        return []
 
     return students
 
@@ -87,14 +86,16 @@ def save_all_students(participants, filename="students.txt"):
 
 
 def list_students(filename="students.txt"):
-    """Print all registered students and their chosen events."""
     students = load_students(filename)
 
+    print("\n=== Participant Records ===")
+
     if not students:
-        print("No students registered yet.")
+        print("No records found.")
         return
 
-    print("\n=== Registered Students ===")
+    print(f"{'Name':<30} | {'Type':<10} | {'ID Number':<15} | {'Status':<10}")
+    print("-" * 75)
 
     for studentID, name, section, eventName, eventTime, eventDate, status in students:
         print(

@@ -13,7 +13,7 @@ def show_main_menu():
     print("[3] Search Participant")
     print("[4] Undo Last Action")
     print("[5] Generate Report")
-    print("[6] Return to User Selection")
+    print("[6] Exit")
     print("-" * 50)
 
     choice = input("Enter your choice [1-6]: ").strip()
@@ -28,7 +28,7 @@ def show_organizer_menu():
     print("[2] View Attendee List")
     print("[3] View Event Summary")
     print("[4] Complete/Delete Finished Event")
-    print("[5] Return to User Selection")
+    print("[5] Return to Main Menu")
     print("-" * 50)
 
     choice = input("Enter your choice [1-5]: ").strip()

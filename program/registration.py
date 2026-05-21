@@ -1,10 +1,8 @@
+# registration.py
 from participant import Participant
 from utils import validate_input
 from logger import log_event
-from storage import save_student, list_students, load_students
-from timeline import Timeline
-from queue import Queue
-from undo import undo_stack
+from storage import save_student, list_students
 
 participants = []
 registration_queue = Queue()
@@ -107,5 +105,30 @@ def register_participant():
 
     log_event(f"Registered participant: {new_participant.viewDetails()}")
 
-    print("Registration successful.")
-    list_students()
+        print("Guest registration successful.")
+        list_students()
+
+    else:
+        print("Guest registration failed due to duplicate guest number.")
+
+
+def register_participant():
+    while True:
+        print("\n=== Register Participant ===")
+        print("1. Student")
+        print("2. Guest")
+        print("3. Back")
+
+        choice = input("Choose participant type: ").strip()
+
+        if choice == "1":
+            register_student()
+
+        elif choice == "2":
+            register_guest()
+
+        elif choice == "3":
+            return
+
+        else:
+            print("Invalid choice. Please try again.")
