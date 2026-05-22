@@ -21,6 +21,7 @@ def show_main_menu():
     return choice
 
 def show_organizer_menu():
+    clear_screen()
     print("\n" + "=" * 50)
     print("                 ORGANIZER MENU")
     print("=" * 50)
@@ -32,7 +33,6 @@ def show_organizer_menu():
     print("-" * 50)
 
     choice = input("Enter your choice [1-5]: ").strip()
-    
     return choice
 
 def show_role_menu():
